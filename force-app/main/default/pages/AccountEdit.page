@@ -9,13 +9,20 @@
                 <apex:inputField value="{!account.BillingState}" required="true"/>
                 <apex:inputField value="{!account.BillingCountry}" required="true"/>
             </apex:pageBlockSection>
+            
             <apex:pageBlockSection title="Related Contacts" columns="1">
                 <apex:pageBlockTable value="{!dynamicContacts}" var="con" id="contacts">
-                    <apex:column headerValue="{!con.FirstName}">
+                    <apex:column headerValue="{!$ObjectType.Contact.fields.FirstName.Label}">
                         <apex:inputField value="{!con.FirstName}" required="true"/>
                     </apex:column>
-                    <apex:column headerValue="{!con.LastName}">
+                    <apex:column headerValue="{!$ObjectType.Contact.fields.LastName.Label}">
                         <apex:inputField value="{!con.LastName}" required="true"/> 
+                    </apex:column>
+                    <apex:column headerValue="{! $Label.ActionsLabel}">
+                        <apex:commandButton reRender="contacts" 
+                        value="{! $Label.DeleteLabel}" immediate="true" action="{!deleteContact}">
+                            <apex:param value="{!con.Id}" name="contactId"/>
+                        </apex:commandButton>
                     </apex:column>
                 </apex:pageBlockTable>
                 <apex:commandButton action="{!addLine}" reRender="contacts" value="Add Contact" immediate="true"/>
