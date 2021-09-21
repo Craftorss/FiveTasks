@@ -3,5 +3,4 @@ public with sharing class AccountEditControllerExtension {
     public AccountEditControllerExtension(ApexPages.StandardController stdController) {
         this.acc = (Account)stdController.getRecord();
     }
-
 }
