@@ -1,4 +1,5 @@
 <apex:page standardController="Account" extensions="AccountEditControllerExtension" showHeader="false">
+    <apex:slds/>
     <apex:form>
         <apex:pageBlock title="Edit Information" mode="edit">
             <apex:pageMessages />
@@ -9,7 +10,7 @@
                 <apex:inputField value="{!account.BillingState}" required="true"/>
                 <apex:inputField value="{!account.BillingCountry}" required="true"/>
             </apex:pageBlockSection>
-            
+
             <apex:pageBlockSection title="Related Contacts" columns="1">
                 <apex:pageBlockTable value="{!dynamicContacts}" var="con" id="contacts">
                     <apex:column headerValue="{!$ObjectType.Contact.fields.FirstName.Label}">
@@ -19,14 +20,18 @@
                         <apex:inputField value="{!con.LastName}" required="true"/> 
                     </apex:column>
                     <apex:column headerValue="{! $Label.ActionsLabel}">
-                        <apex:commandButton reRender="contacts" 
-                        value="{! $Label.DeleteLabel}" immediate="true" action="{!deleteContact}">
+                        <apex:commandButton reRender="contacts" value="{! $Label.DeleteLabel}"
+                            immediate="true" action="{!deleteContact}">
                             <apex:param value="{!con.Id}" name="contactId"/>
                         </apex:commandButton>
                     </apex:column>
                 </apex:pageBlockTable>
                 <apex:commandButton action="{!addLine}" reRender="contacts" value="Add Contact" immediate="true"/>
             </apex:pageBlockSection>
+            
+            <apex:pageBlockButtons>
+                <apex:commandButton action="{!save}" value="Submit"/>
+            </apex:pageBlockButtons>
         </apex:pageBlock>
     </apex:form>
 </apex:page>
