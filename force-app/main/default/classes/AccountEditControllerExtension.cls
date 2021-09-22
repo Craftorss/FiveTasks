@@ -1,6 +1,7 @@
 public with sharing class AccountEditControllerExtension {
-    public Account acct;
-    public List<Contact> dynamicContacts;
+    public Account acct {get; set;}
+    public List<Contact> dynamicContacts {get; set;}
+    public String index {get; set;}
 
     public AccountEditControllerExtension(ApexPages.StandardController stdController) {
         this.acct = (Account)stdController.getRecord();
@@ -15,21 +16,8 @@ public with sharing class AccountEditControllerExtension {
         this.dynamicContacts.add(new Contact());
     }
 
-    public List<Contact> getDynamicContacts(){
-        return this.dynamicContacts;
-    }
-
-    public void DeleteContact(){
-        String gotIdString = Apexpages.currentpage().getParameters().get('contactId');
-        Id gotId = Id.valueOf(gotIdString);
-        Integer selectedContactIndex;
-        for (Integer i = 0; i < this.dynamicContacts.size(); i++) {
-            if(this.dynamicContacts[i].Id == gotId){
-                selectedContactIndex = i;
-                break;
-            }
-        }
-        this.dynamicContacts.remove(selectedContactIndex);
+    public void deleteContact(){
+        this.dynamicContacts.remove(Integer.valueOf(this.index));
     }
 
     public PageReference save(){
@@ -46,7 +34,6 @@ public with sharing class AccountEditControllerExtension {
                 con.AccountId = acc.Id;
             }
             insert dynamicContacts;
-            ApexPages.AddMessage(new ApexPages.Message(ApexPages.Severity.CONFIRM,'Work done succesfully!'));
             pageRef = new PageReference('/'+acc.Id);
             pageRef.setRedirect(true);
         } catch (DmlException ex) {
