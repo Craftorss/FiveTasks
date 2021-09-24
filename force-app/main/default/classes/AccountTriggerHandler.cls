@@ -69,8 +69,4 @@ public class AccountTriggerHandler {
                 System.debug('Changing lat/long failed: ' + sr.errors[0]);
         }
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> db4beea7d2b5e56fcc2d2aa02394e144b696d5cd
