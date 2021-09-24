@@ -1,27 +1,17 @@
 public class Task2Btch implements Database.Batchable<SObject>  {
-    public Database.QueryLocator Start(Database.BatchableContext context){
-        return Database.getQueryLocator(
-            'SELECT Send_Test_Email__c,' + 
-                '(SELECT isPrimary, Contact.Email' +
-                 'FROM OpportunityContactRoles' +
-                 'WHERE IsPrimary = true' +
-                 ')' +   
-            'FROM Opportunity'+
-            'WHERE Send_Test_Email__c = true'
-        );
+    public Database.QueryLocator start(Database.BatchableContext context){
+        return Database.getQueryLocator('SELECT Send_Test_Email__c,(SELECT isPrimary, Contact.Email FROM OpportunityContactRoles WHERE isPrimary = true) FROM Opportunity WHERE Send_Test_Email__c = true');
     }
-    public void Execute(Database.BatchableContext context, List<Opportunity> opps){
-        //List<Opportunity> oppss = [SELECT Send_Test_Email__c,(SELECT isPrimary, Contact.Email FROM OpportunityContactRoles WHERE isPrimary = true) FROM Opportunity WHERE Send_Test_Email__c = true];
+    public void execute(Database.BatchableContext context, List<Opportunity> opps){
+         //List<Opportunity> oppss = [SELECT Send_Test_Email__c,(SELECT isPrimary, Contact.Email FROM OpportunityContactRoles WHERE isPrimary = true) FROM Opportunity WHERE Send_Test_Email__c = true];
         List<Messaging.SingleEmailMessage> messages = new List<Messaging.SingleEmailMessage>();
-        
-        EmailTemplate temp = [SELECT Id, Subject, Description, HtmlValue,
-                            DeveloperName, Body  
+        EmailTemplate temp = [SELECT Id  
                             FROM EmailTemplate
                             WHERE Name = 'Task2'
         ];
         
         for (Opportunity opp : opps){   
-            if(opp.OpportunityContactRoles != null){
+            if(opp.OpportunityContactRoles.size() > 0){
                 if(String.isNotBlank(opp.OpportunityContactRoles[0].Contact.Email)){
                     Messaging.SingleEmailMessage message = new Messaging.SingleEmailMessage();
                     message.setTemplateId(temp.Id);
@@ -34,9 +24,8 @@ public class Task2Btch implements Database.Batchable<SObject>  {
             }
             opp.Send_Test_Email__c = false;
         }
-
-        
-        try{
+        update opps;
+        try {
             List<Messaging.SendEmailResult> results = Messaging.sendEmail(messages);
             for(Messaging.SendEmailResult result : results){
                 if(result.isSuccess()){
@@ -44,15 +33,15 @@ public class Task2Btch implements Database.Batchable<SObject>  {
                 }
                 else {
                     for(Messaging.SendEmailError error : result.errors)
-                    System.debug('The Email to ' + error.targetobjectid + ' failed to send with following: ' + error.message);
+                        System.debug('The Email to ' + error.targetobjectid + ' failed to send with following: ' + error.message);
                 }
             }
-        } catch (Exception ex){
+        } catch (EmailException ex){
             System.debug('Sending Email exception occurs' + ex.getMessage());
         }
     }
 
-    public void Finish(Database.BatchableContext context){
+    public void finish(Database.BatchableContext context){
         return;
     }
 }
