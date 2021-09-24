@@ -18,6 +18,7 @@ public class AccountTriggerHandler {
                 addr += acc.BillingPostalcode + ',';
             if(acc.BillingCountry != null)
                 addr +=acc.BillingCountry;
+<<<<<<< HEAD
             addr = EncodingUtil.urlEncode(addr, 'UTF-8');
             Http http = new Http();
             HttpRequest request = new HttpRequest();
@@ -26,6 +27,18 @@ public class AccountTriggerHandler {
             HttpResponse response = http.send(request);
             if(response.getStatus() == 'OK'){
                 System.debug('Stepped');
+=======
+
+            addr = EncodingUtil.urlEncode(addr, 'UTF-8');
+            Http http = new Http();
+            HttpRequest request = new HttpRequest();
+            request.setEndpoint('https://maps.googleapis.com/maps/api/geocode/json?address='+ addr +
+                                '&key=AIzaSyBNeL5MdzZIzgqTo8DtWXvkIlzHJE-XIXs');
+            request.setMethod('GET');
+            HttpResponse response = http.send(request);
+            if(response.getStatus() == 'OK'){
+                System.debug('Stepped: '+ response.getStatus());
+>>>>>>> db4beea7d2b5e56fcc2d2aa02394e144b696d5cd
                 JSONParser parser = JSON.createParser(response.getBody());
                 Double lat, lng;
                 while (parser.nextToken() != null) {
@@ -67,4 +80,8 @@ public class AccountTriggerHandler {
                 System.debug('Changing lat/long failed: ' + sr.errors[0]);
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> db4beea7d2b5e56fcc2d2aa02394e144b696d5cd

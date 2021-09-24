@@ -7,10 +7,15 @@ trigger AccountTrigger on Account (after insert, after update) {
             newAc.BillingStreet != beforeAc.BillingStreet ||
             newAc.BillingCountry != beforeAc.BillingCountry ||
             newAc.BillingPostalCode != beforeAc.BillingPostalCode ||
+<<<<<<< HEAD
             newAc.BillingCity != beforeAc.BillingCity
             ){
                 accsToHandler.add(newAc.Id);
                 system.debug('got inside');
+=======
+            newAc.BillingCity != beforeAc.BillingCity){
+                accsToHandler.add(newAc.Id);
+>>>>>>> db4beea7d2b5e56fcc2d2aa02394e144b696d5cd
             }
         }
     }
