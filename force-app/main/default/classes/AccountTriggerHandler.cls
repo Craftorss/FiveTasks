@@ -14,12 +14,12 @@ public class AccountTriggerHandler {
                 addr += acc.BillingCity + ',';
             if(acc.BillingState != null)
                 addr += acc.BillingState + ',';
-            if(acc.BillingPostalcode != null)
-                addr += acc.BillingPostalcode + ',';
+            if(acc.BillingPostalCode != null)
+                addr += acc.BillingPostalCode + ',';
             if(acc.BillingCountry != null)
                 addr +=acc.BillingCountry;
-            if(addr == ',,,,')
-                continue;
+            //if(addr == ',,,,')
+                //continue;
             addr = EncodingUtil.urlEncode(addr, 'UTF-8');
             Http http = new Http();
             HttpRequest request = new HttpRequest();
@@ -28,32 +28,31 @@ public class AccountTriggerHandler {
             request.setMethod('GET');
             HttpResponse response = http.send(request);
             if(response.getStatus() == 'OK'){
-                System.debug('Stepped: '+ response.getStatus());
-                JSONParser parser = JSON.createParser(response.getBody());
-                Double lat, lng;
-                while (parser.nextToken() != null) {
-                    if ((parser.getCurrentToken() == JSONToken.FIELD_NAME) && (parser.getText() == 'location')){
-                        parser.nextToken();
-                        while (parser.nextToken() != JSONToken.END_OBJECT){
-                            String s = parser.getText();
+                try {
+                    JSONParser parser = JSON.createParser(response.getBody());
+                    Double lat, lng;
+                    while (parser.nextToken() != null) {
+                        if ((parser.getCurrentToken() == JSONToken.FIELD_NAME) && (parser.getText() == 'location')){
                             parser.nextToken();
-                            if (s == 'lat')
-                                lat = parser.getDoubleValue();
-                            else 
-                                if (s == 'lng')
-                                    lng = parser.getDoubleValue();    
-                        }
-                    } 
-                }
-                if(lat != null && lng != null){
+                            while (parser.nextToken() != JSONToken.END_OBJECT){
+                                String s = parser.getText();
+                                parser.nextToken();
+                                if (s == 'lat')
+                                    lat = parser.getDoubleValue();
+                                else 
+                                    if (s == 'lng')
+                                        lng = parser.getDoubleValue();    
+                            }
+                        } 
+                    }
                     acc.Billing_Location__Latitude__s = lat;
-                    acc.Billing_Location__Longitude__s = lng;                   
-                }
-                else{
+                    acc.Billing_Location__Longitude__s = lng;                       
+                } catch (JSONException ex) {
                     acc.Billing_Location__Latitude__s = null;
                     acc.Billing_Location__Longitude__s = null;
-                    System.debug(response.getBody());
+                    System.debug(ex);
                 }
+
             }
             else {
                 acc.Billing_Location__Latitude__s = null;

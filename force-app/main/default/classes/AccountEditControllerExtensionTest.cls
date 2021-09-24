@@ -2,6 +2,11 @@
 public class AccountEditControllerExtensionTest {
     @isTest
     public static void AddLine_AddingContact(){
+        SingleRequestMock fakeResponse = new SingleRequestMock(200, 'OK', 
+                                                            '[{"location": {"lat": 37.422476'+
+                                                            '"lng": -122.084249}}]', null
+                                                            );
+        Test.setMock(HttpCalloutMock.class, fakeResponse);
         Account ac = new Account(Name='TestAcc');
         insert ac;
         Contact con = new Contact(FirstName='Test1FN', LastName='Test1LN', AccountId=ac.Id);
@@ -16,6 +21,11 @@ public class AccountEditControllerExtensionTest {
     }
     @isTest
     public static void DeleteContact_DeletingContact(){
+        SingleRequestMock fakeResponse = new SingleRequestMock(200, 'OK', 
+                                                            '[{"location": {"lat": 37.422476'+
+                                                            '"lng": -122.084249}}]', null
+                                                            );
+        Test.setMock(HttpCalloutMock.class, fakeResponse);                                                            
         Account ac = new Account(Name='TestAcc');
         insert ac;
         Contact con = new Contact(FirstName='Test1FN', LastName='Test1LN', AccountId=ac.Id);
@@ -31,6 +41,11 @@ public class AccountEditControllerExtensionTest {
     }
     @isTest
     public static void  Save_SaveCorrect(){
+        SingleRequestMock fakeResponse = new SingleRequestMock(200, 'OK', 
+                                                            '[{"location": {"lat": 37.422476'+
+                                                            '"lng": -122.084249}}]', null
+                                                            );  
+        Test.setMock(HttpCalloutMock.class, fakeResponse);        
         Account ac = new Account(Name='TestAcc');
         insert ac;
         Contact con = new Contact(FirstName='Test1FN', LastName='Test1LN', AccountId=ac.Id);
@@ -51,6 +66,11 @@ public class AccountEditControllerExtensionTest {
 
     @isTest
     public static void  Save_SaveIncorrect(){
+        SingleRequestMock fakeResponse = new SingleRequestMock(200, 'OK', 
+                                                            '[{"location": {"lat": 37.422476'+
+                                                            '"lng": -122.084249}}]', null
+                                                            );        
+        Test.setMock(HttpCalloutMock.class, fakeResponse);  
         Account ac = new Account(Name='TestAcc');
         insert ac;
         Contact con = new Contact(FirstName='Test1FN', LastName='Test1LN', AccountId=ac.Id);

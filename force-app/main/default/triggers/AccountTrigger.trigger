@@ -10,12 +10,16 @@ trigger AccountTrigger on Account (after insert, after update) {
             newAc.BillingCity != beforeAc.BillingCity
             ){
                 accsToHandler.add(newAc.Id);
-                system.debug('got inside');
             }
         }
     }
-    else 
-        accsToHandler = Trigger.newMap.keySet();
+    else {
+        for (Account acc : Trigger.new) {
+            if(!(BillingAddressHelper.isEmpty(acc.BillingAddress))){
+                accsToHandler.add(acc.Id);
+            }
+        }
+    }
         
     if (accsToHandler.size() > 0)
         AccountTriggerHandler.setCoordinates(accsToHandler);
