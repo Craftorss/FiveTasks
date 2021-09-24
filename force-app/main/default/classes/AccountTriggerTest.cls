@@ -12,7 +12,8 @@ public class AccountTriggerTest {
         Test.startTest();
         insert acc;
         Test.stopTest();
-        system.assertEquals(37.422476, acc.Billing_Location__Latitude__s, 'Latitude not as expected');
-        system.assertEquals(-122.084249, acc.Billing_Location__Longitude__s, 'Longitude not as expected');
+        Account updAcc = [SELECT Billing_Location__Latitude__s, Billing_Location__Longitude__s FROM Account WHERE Id = :acc.Id];
+        system.assertEquals(37.422476, updAcc.Billing_Location__Latitude__s, 'Latitude not as expected');
+        system.assertEquals(-122.084249, updAcc.Billing_Location__Longitude__s, 'Longitude not as expected');
     }
 }

@@ -18,7 +18,8 @@ public class AccountTriggerHandler {
                 addr += acc.BillingPostalcode + ',';
             if(acc.BillingCountry != null)
                 addr +=acc.BillingCountry;
-
+            if(addr == ',,,,')
+                continue;
             addr = EncodingUtil.urlEncode(addr, 'UTF-8');
             Http http = new Http();
             HttpRequest request = new HttpRequest();
