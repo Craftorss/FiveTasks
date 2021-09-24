@@ -18,14 +18,16 @@ public class AccountTriggerHandler {
                 addr += acc.BillingPostalcode + ',';
             if(acc.BillingCountry != null)
                 addr +=acc.BillingCountry;
+
             addr = EncodingUtil.urlEncode(addr, 'UTF-8');
             Http http = new Http();
             HttpRequest request = new HttpRequest();
-            request.setEndpoint('https://maps.googleapis.com/maps/api/geocode/json?address='+ addr +'&key=AIzaSyBNeL5MdzZIzgqTo8DtWXvkIlzHJE-XIXs');
+            request.setEndpoint('https://maps.googleapis.com/maps/api/geocode/json?address='+ addr +
+                                '&key=AIzaSyBNeL5MdzZIzgqTo8DtWXvkIlzHJE-XIXs');
             request.setMethod('GET');
             HttpResponse response = http.send(request);
             if(response.getStatus() == 'OK'){
-                System.debug('Stepped');
+                System.debug('Stepped: '+ response.getStatus());
                 JSONParser parser = JSON.createParser(response.getBody());
                 Double lat, lng;
                 while (parser.nextToken() != null) {
