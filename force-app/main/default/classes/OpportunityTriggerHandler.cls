@@ -4,52 +4,84 @@ public class OpportunityTriggerHandler{
                                     System.TriggerOperation triggerEvent 
                                     ){
         switch on triggerEvent {
-            when BEFORE_INSERT, BEFORE_UPDATE {
+            //Также перед закрытием опотьюнити нужно сделать 2 валидации
+            //Email в primary контакте заполнен
+            //Billing Address в аккаунте заполнен
+            /*Я так понимаю, валидация имеется ввиду только по обновлению на Closed Won.
+            Иначе при insert проверить BillingAddress на аккаунте ещё могу по AccountId,
+            А вот для OpportunityContactRoles нужно, чтобы Opportunity Id уже был*/
+            when BEFORE_UPDATE {
+                List<Opportunity> oppsSetClosedWon = new List<Opportunity>();
                 for (Opportunity opp : newRecords) {
                     if (isSetClosedWon(opp, oldMap)){
-                        handleAccountValidation(opp);
-                        handlePrimaryEmailValidation(opp);
+                        oppsSetClosedWon.add(opp);
                     }
                 }
+                if(!oppsSetClosedWon.isEmpty()){
+                    List<Opportunity> oppsWithRelated = [SELECT Account.BillingAddress,(
+                                                            SELECT Contact.Email 
+                                                            FROM OpportunityContactRoles
+                                                            WHERE isPrimary = true
+                                                            )  
+                                                        FROM Opportunity 
+                                                        WHERE ID IN :oppsSetClosedWon 
+                                                        ];
+                    handleAccountValidationAll(oppsWithRelated, newMap);
+                    handlePrimaryEmailValidationAll(oppsWithRelated, newMap);
+                }
             }
-            when AFTER_INSERT, AFTER_UPDATE {
+
+            when AFTER_UPDATE {
                 List<Opportunity> toNotifyOpps = new List<Opportunity>();
                 for (Opportunity opp : newRecords) {
                     if (isSetClosedWon(opp, oldMap)){
                         toNotifyOpps.add(opp);
                     }
                 }
-                handleSendMail(toNotifyOpps);
-                System.debug('ToNotifyOpps '+toNotifyOpps);
+                if(!toNotifyOpps.isEmpty()){
+                    List<Opportunity> oppsWithRelated = [SELECT (
+                                                            SELECT Contact.Email 
+                                                            FROM OpportunityContactRoles
+                                                            WHERE isPrimary = true
+                                                            )  
+                                                        FROM Opportunity 
+                                                        WHERE ID IN :toNotifyOpps 
+                                                        ];
+                    handleSendMail(oppsWithRelated);
+                    System.debug('ToNotify' + oppsWithRelated);
+                }
             }
         }
     }
 
-    public static Boolean handleAccountValidation(Opportunity opp){
-        Account acc =   [SELECT BillingAddress
-                        FROM Account 
-                        WHERE Id = :opp.AccountId
-                        ];
-        if(BillingAddressHelper.isEmpty(acc.BillingAddress)){
-            opp.addError('Account Billing Address is Empty');
-            return false;
+    public static void handleAccountValidationAll(List<Opportunity> opps, Map<Id,Opportunity> newMap){
+        List<Opportunity> checkAccAddr = new List<Opportunity>();
+        for(Opportunity opp : opps){
+            if(opp.Account == null){
+                newMap.get(opp.id).addError('No account for this Opportunity');
+            }
+            else 
+                checkAccAddr.add(opp);
         }
-        return true;
+        if(checkAccAddr.isEmpty())
+            return;
+        for (Opportunity opp : checkAccAddr) {
+            if(BillingAddressHelper.isEmpty(opp.Account.BillingAddress))
+                newMap.get(opp.id).addError('Account Billing Address is Empty');
+        }  
     }
-    public static Boolean handlePrimaryEmailValidation(Opportunity opp){
-        OpportunityContactRole primaryConRole = [SELECT Contact.Email FROM OpportunityContactRole WHERE OpportunityId = :opp.Id AND isPrimary = true];
-        Boolean fl = true;
-        if(primaryConRole == null){
-            opp.AddError('There is no primary contact');
-            fl = false;
-        }
-        else{
-            if(String.isBlank(primaryConRole.Contact.Email)){
-                opp.AddError('Email is not specified on primary contact');
-                fl = false;
+    
+    public static void handlePrimaryEmailValidationAll(List<Opportunity> opps, Map<Id,Opportunity> newMap){
+        for (Opportunity opp : opps) {
+            if(opp.OpportunityContactRoles.isEmpty()){
+                newMap.get(opp.id).addError('There is no primary contact"');
+            }
+            else {
+                if(String.isBlank(opp.OpportunityContactRoles[0].Contact.Email)){
+                    newMap.get(opp.id).AddError('Email is not specified on primary contact');
+                }
             }
         }
-        return fl;
     }
     public static void handleSendMail(List<Opportunity> opps){
         if(opps.isEmpty())

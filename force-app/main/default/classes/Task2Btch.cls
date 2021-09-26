@@ -3,7 +3,6 @@ public class Task2Btch implements Database.Batchable<SObject>  {
         return Database.getQueryLocator('SELECT Send_Test_Email__c,(SELECT isPrimary, Contact.Email FROM OpportunityContactRoles WHERE isPrimary = true) FROM Opportunity WHERE Send_Test_Email__c = true');
     }
     public void execute(Database.BatchableContext context, List<Opportunity> opps){
-         //List<Opportunity> oppss = [SELECT Send_Test_Email__c,(SELECT isPrimary, Contact.Email FROM OpportunityContactRoles WHERE isPrimary = true) FROM Opportunity WHERE Send_Test_Email__c = true];
         List<Messaging.SingleEmailMessage> messages = new List<Messaging.SingleEmailMessage>();
         EmailTemplate temp = [SELECT Id  
                             FROM EmailTemplate

@@ -9,8 +9,7 @@ public class SendMailer {
             System.debug('Invalid Email template name');
             return;
         }
-        List <Opportunity> oppsWithContactRoles = [SELECT Id,(SELECT isPrimary, Contact.Email FROM OpportunityContactRoles WHERE isPrimary = true) FROM Opportunity];
-        for (Opportunity opp : oppsWithContactRoles){
+        for (Opportunity opp : opps){
             if(opp.OpportunityContactRoles.size() > 0){
                 if(String.isNotBlank(opp.OpportunityContactRoles[0].Contact.Email)){
                     Messaging.SingleEmailMessage message = new Messaging.SingleEmailMessage();
@@ -23,19 +22,16 @@ public class SendMailer {
                 }
             }
         }
-        try {
-            List<Messaging.SendEmailResult> results = Messaging.sendEmail(messages);
-            for(Messaging.SendEmailResult result : results){
-                if(result.isSuccess()){
-                    System.debug('The Email to send succesfully');
-                }
-                else {
-                    for(Messaging.SendEmailError error : result.errors)
-                        System.debug('The Email to ' + error.targetobjectid + ' failed to send with following: ' + error.message);
-                }
+
+        List<Messaging.SendEmailResult> results = Messaging.sendEmail(messages);
+        for(Messaging.SendEmailResult result : results){
+            if(result.isSuccess()){
+                System.debug('The Email to send succesfully');
             }
-        } catch (EmailException ex){
-            System.debug('Sending Email exception occurs' + ex.getMessage());
+            else {
+                for(Messaging.SendEmailError error : result.errors)
+                    System.debug('The Email to ' + error.targetObjectId + ' failed to send with following: ' + error.message);
+            }
         }
     }
 }

@@ -14,7 +14,7 @@ trigger AccountTrigger on Account (after insert, after update) {
         }
     }
     else {
-        for (Account acc : Trigger.new) {
+        for (Account acc : [SELECT BillingAddress FROM Account WHERE Id IN :Trigger.new]) {
             if(!(BillingAddressHelper.isEmpty(acc.BillingAddress))){
                 accsToHandler.add(acc.Id);
             }
