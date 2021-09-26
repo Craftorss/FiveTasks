@@ -1,3 +1,7 @@
+/*
+* Tests with mock, without mock request denied
+and link to billing... vot tak
+*/
 public class AccountTriggerHandler {
     @future(callout = true)
     public static void setCoordinates(Set<Id> AccountIds){

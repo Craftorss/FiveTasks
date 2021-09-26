@@ -41,6 +41,6 @@ public class Task2Test {
             Database.executeBatch(task, 2);
         Test.stopTest();
         
-        system.assertEquals(0, [SELECT COUNT() FROM Opportunity WHERE Send_Test_Email__c = true], 'A job should be scheduled'); 
+        system.assertEquals(0, [SELECT COUNT() FROM Opportunity WHERE Send_Test_Email__c = true], 'Failed processing batches'); 
     }
 }
