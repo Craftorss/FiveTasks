@@ -1,11 +1,12 @@
 public class SendMailer {
     public static void MassSendMailToPrimaryWithTemplate(List<Opportunity> opps, String emailTemplateName){
         List<Messaging.SingleEmailMessage> messages = new List<Messaging.SingleEmailMessage>();
-        EmailTemplate temp = [SELECT Id  
+        List<EmailTemplate> temp = [SELECT Id  
                             FROM EmailTemplate
-                            WHERE Name = :emailTemplateName
+                            WHERE Name = :emailTemplateName 
+                            LIMIT 1
                             ];
-        if(temp == null){
+        if(temp.size() < 1){
             System.debug('Invalid Email template name');
             return;
         }
@@ -13,7 +14,7 @@ public class SendMailer {
             if(opp.OpportunityContactRoles.size() > 0){
                 if(String.isNotBlank(opp.OpportunityContactRoles[0].Contact.Email)){
                     Messaging.SingleEmailMessage message = new Messaging.SingleEmailMessage();
-                    message.setTemplateId(temp.Id);
+                    message.setTemplateId(temp[0].Id);
                     message.setTargetObjectId(opp.OpportunityContactRoles[0].Contact.Id);
                     message.setWhatId(opp.Id);
                     message.setSaveAsActivity(true);

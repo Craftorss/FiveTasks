@@ -113,4 +113,9 @@ public class OpportunityTriggerTest {
                                     ];
         System.assertEquals(1, oppWithMail.Emails.size(), 'There should be 1 email sent');
     }
+    @isTest
+    public static void AdditionalTests(){
+        SendMailer.MassSendMailToPrimaryWithTemplate(null, 'zxfffffffffffffffffffffffffdsfdfsdf');
+        BillingAddressHelper.isEmpty(new System.Address());
+    }
 }
