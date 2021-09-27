@@ -4,7 +4,7 @@ trigger OpportunityTrigger on Opportunity (before insert, after insert,
                                             after undelete
                                             ){
     new OpportunityTriggerHandlerFrmwk().run(); 
-/*  static handler methods implementation  
+/*  static handler methods implementation...  
     OpportunityTriggerHandler.handleTrigger(Trigger.new, Trigger.old, 
                                             Trigger.newMap, Trigger.oldMap, 
                                             Trigger.operationType);

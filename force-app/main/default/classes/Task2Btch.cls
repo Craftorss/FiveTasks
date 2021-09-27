@@ -4,16 +4,17 @@ public class Task2Btch implements Database.Batchable<SObject>  {
     }
     public void execute(Database.BatchableContext context, List<Opportunity> opps){
         List<Messaging.SingleEmailMessage> messages = new List<Messaging.SingleEmailMessage>();
-        EmailTemplate temp = [SELECT Id  
+        List<EmailTemplate> temp = [SELECT Id  
                             FROM EmailTemplate
                             WHERE Name = 'Task2'
         ];
-        
+        if(temp.size() < 1)
+            return;
         for (Opportunity opp : opps){   
             if(opp.OpportunityContactRoles.size() > 0){
                 if(String.isNotBlank(opp.OpportunityContactRoles[0].Contact.Email)){
                     Messaging.SingleEmailMessage message = new Messaging.SingleEmailMessage();
-                    message.setTemplateId(temp.Id);
+                    message.setTemplateId(temp[0].Id);
                     message.setTargetObjectId(opp.OpportunityContactRoles[0].Contact.Id);
                     message.setWhatId(opp.Id);
                     message.setSaveAsActivity(true);

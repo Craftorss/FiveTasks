@@ -26,10 +26,12 @@ public class Task2Test {
     @isTest
     public static void Execute_CheckScheduler(){
         String cronExpr = '0 30 * * * ?';
+        //String cronExpr2 = '0 0 * * * ?';
         String jobName = 'Test Scheduled Job';
         Test.startTest();
             Task2Schd schd = new Task2Schd();
             System.schedule(jobName, cronExpr, schd);
+
         Test.stopTest();
         
         system.assertEquals(1, [SELECT COUNT() FROM CronTrigger], 'A job should be scheduled'); 
