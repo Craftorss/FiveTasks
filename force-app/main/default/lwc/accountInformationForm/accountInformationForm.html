@@ -1,7 +1,9 @@
 <template>
-    <lightning-input value={account.name} required="true"></lightning-input>
-    <lightning-input value={account.billingStreet}></lightning-input>
-    <lightning-input value={account.billingPostalCode}></lightning-input>
-    <lightning-input value={account.billingState}></lightning-input>
-    <lightning-input value={account.billingCountry}></lightning-input>
+    <lightning-card title="Account Information" icon-name="standard:account" class="slds-card_boundary fixBoundary">
+        <lightning-input value={account.name} required="true" label={account.name} class="myInput"></lightning-input>
+        <lightning-input value={account.billingStreet}></lightning-input>
+        <lightning-input value={account.billingPostalCode}></lightning-input>
+        <lightning-input value={account.billingState}></lightning-input>
+        <lightning-input value={account.billingCountry}></lightning-input>
+    </lightning-card>
 </template>

@@ -1,0 +1,39 @@
+<apex:page controller="NewAccountController" tabStyle="Account" showHeader="false">
+    <apex:slds/>
+    <apex:form>
+        <apex:pageBlock title="Edit Information" mode="edit">
+            <apex:pageMessages />
+            <apex:pageBlockSection title="Account">
+                <apex:inputField value="{!account.Name}" required="true"/>
+                <apex:inputField value="{!account.BillingStreet}" required="true"/>
+                <apex:inputField value="{!account.BillingPostalCode}" required="true"/>
+                <apex:inputField value="{!account.BillingState}" required="true"/>
+                <apex:inputField value="{!account.BillingCountry}" required="true"/>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="Related Contacts" columns="1">
+                <apex:variable value="{!0}" var="iter"/>
+                <apex:pageBlockTable value="{!dynamicContacts}" var="con" id="contacts">
+                    <apex:column headerValue="{!$ObjectType.Contact.fields.FirstName.Label}">
+                        <apex:inputField value="{!con.FirstName}" required="true"/>
+                    </apex:column>
+                    <apex:column headerValue="{!$ObjectType.Contact.fields.LastName.Label}">
+                        <apex:inputField value="{!con.LastName}" required="true"/> 
+                    </apex:column>
+                    <apex:column headerValue="{! $Label.ActionsLabel}">
+                        <apex:commandLink value="{! $Label.DeleteLabel}"
+                        immediate="true" action="{!deleteContact}">
+                            <apex:param value="{!iter}" name="index" assignTo="{!index}"/>
+                        </apex:commandLink>
+                    </apex:column>
+                    <apex:variable var="iter" value="{!iter + 1}"/>
+                </apex:pageBlockTable>
+                <apex:commandButton action="{!addLine}" value="Add Contact" immediate="true"/>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockButtons>
+                <apex:commandButton action="{!save}" value="Submit"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

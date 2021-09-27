@@ -1,0 +1,8 @@
+.fixBoundary{
+    display: block;
+}
+
+.myInput{
+    display:flex;
+    flex-direction: row;
+}

@@ -10,7 +10,6 @@ export default class UpdateCompanyInformation extends LightningElement {
         billingCountry:'USA'
     }
 
-
     closeAction(){
         this.dispatchEvent(
             new CloseActionScreenEvent()
