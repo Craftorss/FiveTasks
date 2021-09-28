@@ -4,11 +4,16 @@ public with sharing class NewAccountController {
     public String index {get; set;}
 
     public NewAccountController() {
+        String accountId = ApexPages.currentPage().getParameters().get('id');
+        if(String.isBlank(accountId))
+            return;
         this.account = [SELECT Name, BillingStreet, BillingPostalCode, BillingState,
                                 BillingCountry 
                         FROM Account 
-                        WHERE Id = :ApexPages.currentPage().getParameters().get('id')
+                        WHERE Id = :accountId
                         ];
+        if(account == null)
+            return;
         this.dynamicContacts = [SELECT FirstName, LastName 
                                 FROM Contact 
                                 WHERE AccountId = :this.account.Id

@@ -1,9 +1,36 @@
 <template>
     <lightning-card title="Account Information" icon-name="standard:account" class="slds-card_boundary fixBoundary">
-        <lightning-input value={account.name} required="true" label={account.name} class="myInput"></lightning-input>
-        <lightning-input value={account.billingStreet}></lightning-input>
-        <lightning-input value={account.billingPostalCode}></lightning-input>
-        <lightning-input value={account.billingState}></lightning-input>
-        <lightning-input value={account.billingCountry}></lightning-input>
+        <template if:true={account}>
+            <lightning-input value={account.Name} required="true" variant="label-inline" class="slds-var-p-horizontal_xx-small"
+                            name="name" label={fieldsLabels.Name} onchange={handleChange}
+            >
+            </lightning-input>
+            <lightning-textarea value={account.BillingStreet} class="slds-var-p-horizontal_xx-small" variant="label-inline"
+                            name="billingStreet" label={fieldsLabels.BillingStreet} onchange={handleChange}
+            >
+            </lightning-textarea>
+            <lightning-input value={account.BillingPostalCode} class="slds-var-p-horizontal_xx-small" variant="label-inline"
+                            name="billingPostalCode" label={fieldsLabels.BillingPostalCode} onchange={handleChange}
+            >
+            </lightning-input>
+            <lightning-input value={account.BillingState} class="slds-var-p-horizontal_xx-small" variant="label-inline"
+                            name="billingState" label={fieldsLabels.BillingState} onchange={handleChange}
+            >
+            </lightning-input>
+            <lightning-input value={account.BillingCountry} class="slds-var-p-horizontal_xx-small" variant="label-inline"
+                            name="billingCountry" label={fieldsLabels.BillingCountry} onchange={handleChange}
+            >
+            </lightning-input>
+        </template>
+        <template if:false={account}>
+            <template if:true={error}>
+                <h1>Such error was occured while attempting to load Account Information {error}</h1>
+            </template>
+            <template if:false={error}>
+                <div class="wrapper">
+                    <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                </div>
+            </template>
+        </template>
     </lightning-card>
 </template>

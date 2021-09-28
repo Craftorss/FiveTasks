@@ -1,15 +1,17 @@
 public with sharing class UpdateCompanyInformationCtrl {
     @AuraEnabled
-    public static Account getOppAccount(String oppId){
-        Opportunity opp =    [SELECT Account.Name, Account.BillingStreet, Account.BillingPostalCode, Account.BillingState, 
-                                    Account.BillingCountry 
-                            FROM Opportunity 
-                            WHERE Id = :oppId 
+    public static Account getAccount(String accountId){
+        System.debug('Entered getAccount with id = ' + accountId);
+        Account account =   [SELECT Name, BillingStreet, BillingPostalCode, BillingState, 
+                                    BillingCountry 
+                            FROM Account 
+                            WHERE Id = :accountId 
                             LIMIT 1
                             ];
-        System.debug('got here' + opp);
-        return opp.Account;
+        System.debug('got here' + account);
+        return account;
     }
+
     @AuraEnabled(cacheable=true)
     public static List<Contact> getContacts(String oppId){
         Opportunity opp =   [SELECT AccountId 
