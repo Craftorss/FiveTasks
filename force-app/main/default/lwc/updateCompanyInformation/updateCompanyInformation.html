@@ -2,9 +2,19 @@
 <template>
     <lightning-quick-action-panel header="Update Company Information">
       <template if:true={opportunityAccountId}>
-        <c-account-information-form opportunity-account-id={opportunityAccountId} onaccountchange={handleAccountChange}></c-account-information-form>
-        <template if:true={account}>
-        </template>
+        <template if:true={account}> ACCNAME: {account.Name}</template>
+        <c-account-information-form 
+          opportunity-account-id={opportunityAccountId} 
+          onaccountchange={handleAccountChange}
+        >
+        </c-account-information-form>
+          
+        <div class="slds-var-p-top_medium">
+          <c-account-contacts-information
+            
+          >
+          </c-account-contacts-information>
+        </div>
       </template>
       <template if:false={opportunityAccountId}>
         <h1>Opportunity has no Account</h1>

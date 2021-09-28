@@ -16,6 +16,8 @@ export default class UpdateCompanyInformation extends LightningElement {
 
     handleAccountChange(event){
         this.account = event.detail;
+        console.log('Event catched');
+        console.log(event.detail);
     }
     closeAction(){
         this.dispatchEvent(

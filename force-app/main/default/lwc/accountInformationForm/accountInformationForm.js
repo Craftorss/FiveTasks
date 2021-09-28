@@ -6,18 +6,20 @@ import BillingState from '@salesforce/schema/Account.BillingState';
 import BillingCountry from '@salesforce/schema/Account.BillingCountry';
 import getAccount from '@salesforce/apex/UpdateCompanyInformationCtrl.getAccount';
 
+const fieldsLabels = {
+    "Name": Name.fieldApiName, 
+    "BillingStreet": BillingStreet.fieldApiName, 
+    "BillingPostalCode": BillingPostalCode.fieldApiName,
+    "BillingState": BillingState.fieldApiName,
+    "BillingCountry": BillingCountry.fieldApiName
+};
+
 export default class AccountInformationForm extends LightningElement {
     accountIdStored
     error
     account
+    fieldsLabels = fieldsLabels;
 
-    fieldsLabels = {
-        "Name": Name.fieldApiName, 
-        "BillingStreet": BillingStreet.fieldApiName, 
-        "BillingPostalCode": BillingPostalCode.fieldApiName,
-        "BillingState": BillingState.fieldApiName,
-        "BillingCountry": BillingCountry.fieldApiName
-    };
 
     @api
     get opportunityAccountId(){
@@ -75,7 +77,6 @@ export default class AccountInformationForm extends LightningElement {
         const event = new CustomEvent('accountchange', {
             detail: this.account
         });
+        console.log('event submitted');
     }
-
-
 }
