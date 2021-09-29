@@ -13,20 +13,27 @@ public with sharing class UpdateCompanyInformationCtrl {
     }
 
     @AuraEnabled(cacheable=true)
-    public static List<Contact> getContacts(String oppId){
-        Opportunity opp =   [SELECT AccountId 
-                            FROM Opportunity 
-                            WHERE Id = :oppId 
-                            LIMIT 1
-                            ];
-        if(opp == null)
-            return null;
-        if(opp.AccountId == null)
+    public static List<Contact> getContacts(String accountId){
+        if(String.isBlank(accountId))
             return null;
         List<Contact> contacts =    [SELECT FirstName, LastName, Phone, Email 
                                     FROM Contact
-                                    WHERE AccountId = :opp.AccountId
+                                    WHERE AccountId = :accountId
                                     ];
         return contacts;
+    }
+
+    @AuraEnabled
+    public static void saveAccountAndContacts(string accountJson, string contactsJson){
+        System.debug(accountJson);
+        System.debug(contactsJson);
+
+        Account acc = JSON.deserialize(accountJSON, Account);
+
+        try {
+            
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
     }
 }

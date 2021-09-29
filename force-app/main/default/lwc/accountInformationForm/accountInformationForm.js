@@ -58,7 +58,7 @@ export default class AccountInformationForm extends LightningElement {
                 this.account.BillingStreet = event.target.value
                 this.onAccountChangeNotify()
                 break;
-            case "billlingState":
+            case "billingState":
                 this.account.BillingState = event.target.value
                 this.onAccountChangeNotify()
                 break;
@@ -77,6 +77,6 @@ export default class AccountInformationForm extends LightningElement {
         const event = new CustomEvent('accountchange', {
             detail: this.account
         });
-        console.log('event submitted');
+        this.dispatchEvent(event);
     }
 }

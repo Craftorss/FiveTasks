@@ -1,8 +1,10 @@
 <!-- sldsValidatorIgnore -->
 <template>
     <lightning-quick-action-panel header="Update Company Information">
+      <template if:true={error}>
+        Error is: {error}
+      </template>
       <template if:true={opportunityAccountId}>
-        <template if:true={account}> ACCNAME: {account.Name}</template>
         <c-account-information-form 
           opportunity-account-id={opportunityAccountId} 
           onaccountchange={handleAccountChange}
@@ -11,7 +13,8 @@
           
         <div class="slds-var-p-top_medium">
           <c-account-contacts-information
-            
+            opportunity-account-id={opportunityAccountId}
+            oncontactschange={handleContactsChange}
           >
           </c-account-contacts-information>
         </div>
