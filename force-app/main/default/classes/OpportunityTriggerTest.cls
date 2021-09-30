@@ -1,3 +1,4 @@
+//prereworked Task 5
 @isTest
 public class OpportunityTriggerTest {
     @TestSetup
@@ -7,67 +8,67 @@ public class OpportunityTriggerTest {
                                                             '"lng": -122.084249}}]', null
                                                             );
         Test.setMock(HttpCalloutMock.class, fakeResponse);
-        List<Account> accs = new List<Account>{
+        List<Account> accounts = new List<Account>{
             new Account(Name = 'YAYAD', BillingCity = 'some...'),
             new Account(Name = 'YAYAS'),
             new Account(Name = 'YAYAZ', BillingCity = 'some...', BillingCountry = 'USA',
                         BillingPostalCode='CA', BillingState='California', BillingStreet='Some'
                         )
         };        
-        insert accs;
-        List<Opportunity> opps = new List<Opportunity>{
+        insert accounts;
+        List<Opportunity> opportunities = new List<Opportunity>{
             new Opportunity(Name = 'dsa', StageName = 'Prospecting', 
-                            CloseDate = System.today(), AccountId = accs[0].Id
+                            CloseDate = System.today(), AccountId = accounts[0].Id
                             ), 
             new Opportunity(Name = 'ddas', StageName = 'Prospecting',
-                            CloseDate = System.today(), AccountId = accs[1].Id
+                            CloseDate = System.today(), AccountId = accounts[1].Id
                             ), 
             new Opportunity(Name = 'ddadss', StageName = 'Closed Won',
-                            CloseDate = System.today(), AccountId = accs[1].Id
+                            CloseDate = System.today(), AccountId = accounts[1].Id
                             ),
             new Opportunity(Name = 'ddascsdfs', StageName = 'Prospecting',
-                            CloseDate = System.today(),  AccountId = accs[2].Id
+                            CloseDate = System.today(),  AccountId = accounts[2].Id
                             ),
             new Opportunity(Name = 'ddascsdfsSAD', StageName = 'Prospecting',
                             CloseDate = System.today()
                             ),
             new Opportunity(Name = 'ddascsdfsSADssd', StageName = 'Prospecting',
-                            CloseDate = System.today(), AccountId = accs[2].Id
+                            CloseDate = System.today(), AccountId = accounts[2].Id
                             )
             };
-        List<Contact> cons = new List<Contact>{
+        List<Contact> contacts = new List<Contact>{
                 new Contact(FirstName='ds', LastName='dsa', Email='kirill.huk@enway.com'),
                 new Contact(FirstName='sd', LastName='dsad', Email='ietwe@mail.ru'),
                 new Contact(FirstName='sd', LastName='dsad')
             };
-        insert opps;
-        insert cons;
-        List<OpportunityContactRole> conRoles = new List<OpportunityContactRole>{
-            new OpportunityContactRole(ContactId = cons[0].Id, OpportunityId = opps[0].Id, 
+        insert opportunities;
+        insert contacts;
+        List<OpportunityContactRole> contactRoles = new List<OpportunityContactRole>{
+            new OpportunityContactRole(ContactId = contacts[0].Id, OpportunityId = opportunities[0].Id, 
                                         isPrimary = true
             ),
-            new OpportunityContactRole(ContactId = cons[1].Id, OpportunityId = opps[3].Id, 
+            new OpportunityContactRole(ContactId = contacts[1].Id, OpportunityId = opportunities[3].Id, 
                                         isPrimary = true
             ),
-            new OpportunityContactRole(ContactId = cons[2].Id, OpportunityId = opps[5].Id, 
+            new OpportunityContactRole(ContactId = contacts[2].Id, OpportunityId = opportunities[5].Id, 
                                         isPrimary = true
             )
         };
 
-        insert conRoles;
+        insert contactRoles;
     }
     
 
     @isTest
     public static void OpportunityUpdate_SetToClosedWonAll(){
-        List<Opportunity> opps =    [SELECT Id, StageName
-                                    FROM Opportunity 
-                                    ];
-        for (Opportunity opp : opps) {
-            opp.StageName = 'Closed Won';
+        List<Opportunity> opportunities =   [SELECT Id, StageName
+                                            FROM Opportunity 
+                                            ];
+        for (Opportunity opportunity : opportunities) {
+            opportunity.StageName = 'Closed Won';
         }
         Test.startTest();
-        Database.update(opps, false);
+        Database.update(opportunities, false);
         Test.stopTest();
         Integer count = [SELECT COUNT() 
                         FROM Opportunity 
@@ -83,35 +84,35 @@ public class OpportunityTriggerTest {
                             '"lng": -122.084249}}]', null
         );
         Test.setMock(HttpCalloutMock.class, fakeResponse);
-        Account acc = new Account(Name = 'YAYAZ', BillingCity = 'some...', BillingCountry = 'USA',
+        Account account = new Account(Name = 'YAYAZ', BillingCity = 'some...', BillingCountry = 'USA',
                                     BillingPostalCode='CA', BillingState='California', BillingStreet='Some'
         );
-        insert acc;
-        Opportunity opp = new Opportunity(Name = 'dsa', StageName = 'Prospecting', 
-                                        CloseDate = System.today(), AccountId = acc.Id
+        insert account;
+        Opportunity opportunity = new Opportunity(Name = 'dsa', StageName = 'Prospecting', 
+                                        CloseDate = System.today(), AccountId = account.Id
         );
-        insert opp;
-        Contact con = new Contact(FirstName='ds', LastName='dsa', Email='kirill.huk@enway.com');
-        insert con;
-        OpportunityContactRole oppRole = 
-            new OpportunityContactRole(ContactId = con.Id, OpportunityId = opp.Id, 
+        insert opportunity;
+        Contact contact = new Contact(FirstName='ds', LastName='dsa', Email='kirill.huk@enway.com');
+        insert contact;
+        OpportunityContactRole contactRole = 
+            new OpportunityContactRole(ContactId = contact.Id, OpportunityId = opportunity.Id, 
                                         isPrimary = true
         );
-        insert oppRole;
-        opp.StageName = 'Closed Won';
+        insert contactRole;
+        opportunity.StageName = 'Closed Won';
         Test.startTest();
-        Database.update(opp, false);
+        Database.update(opportunity, false);
         Integer invocations = Limits.getEmailInvocations();
         Test.stopTest();
-        Opportunity oppWithMail =   [SELECT (
-                                        SELECT Id 
-                                        FROM Emails
-                                        ) 
-                                    FROM Opportunity 
-                                    WHERE Id = :opp.Id
-                                    LIMIT 1
-                                    ];
-        System.assertEquals(1, oppWithMail.Emails.size(), 'There should be 1 email sent');
+        Opportunity opportunityWithMail =   [SELECT (
+                                                SELECT Id 
+                                                FROM Emails
+                                            ) 
+                                            FROM Opportunity 
+                                            WHERE Id = :opportunity.Id
+                                            LIMIT 1
+                                            ];
+        System.assertEquals(1, opportunityWithMail.Emails.size(), 'There should be 1 email sent');
     }
     @isTest
     public static void AdditionalTests(){

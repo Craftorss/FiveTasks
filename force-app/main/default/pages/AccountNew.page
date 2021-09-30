@@ -1,5 +1,4 @@
 <apex:page controller="NewAccountController" tabStyle="Account" showHeader="false">
-    <apex:slds/>
     <apex:form>
         <apex:pageBlock title="Edit Information" mode="edit">
             <apex:pageMessages />

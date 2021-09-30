@@ -1,30 +1,31 @@
-public class Task2Btch implements Database.Batchable<SObject>  {
+//reworked Task 2
+public class ProcessOpportunityBatch implements Database.Batchable<SObject> { 
     public Database.QueryLocator start(Database.BatchableContext context){
         return Database.getQueryLocator('SELECT Send_Test_Email__c,(SELECT isPrimary, Contact.Email FROM OpportunityContactRoles WHERE isPrimary = true) FROM Opportunity WHERE Send_Test_Email__c = true');
     }
-    public void execute(Database.BatchableContext context, List<Opportunity> opps){
+    public void execute(Database.BatchableContext context, List<Opportunity> opportunities){
         List<Messaging.SingleEmailMessage> messages = new List<Messaging.SingleEmailMessage>();
-        List<EmailTemplate> temp = [SELECT Id  
-                            FROM EmailTemplate
-                            WHERE Name = 'Task2'
-        ];
-        if(temp.size() < 1)
+        List<EmailTemplate> emailTemplatesList =    [SELECT Id
+                                                    FROM EmailTemplate
+                                                    WHERE Name = 'Task2'
+                                                    ];
+        if(emailTemplatesList.isEmpty())
             return;
-        for (Opportunity opp : opps){   
-            if(opp.OpportunityContactRoles.size() > 0){
-                if(String.isNotBlank(opp.OpportunityContactRoles[0].Contact.Email)){
+        for (Opportunity opportunity : opportunities){   
+            if(opportunity.OpportunityContactRoles.size() > 0){
+                if(String.isNotBlank(opportunity.OpportunityContactRoles[0].Contact.Email)){
                     Messaging.SingleEmailMessage message = new Messaging.SingleEmailMessage();
-                    message.setTemplateId(temp[0].Id);
-                    message.setTargetObjectId(opp.OpportunityContactRoles[0].Contact.Id);
-                    message.setWhatId(opp.Id);
+                    message.setTemplateId(emailTemplatesList[0].Id);
+                    message.setTargetObjectId(opportunity.OpportunityContactRoles[0].Contact.Id);
+                    message.setWhatId(opportunity.Id);
                     message.setSaveAsActivity(true);
-                    message.toAddresses = new String[] {opp.OpportunityContactRoles[0].Contact.Email};
+                    message.toAddresses = new String[] {opportunity.OpportunityContactRoles[0].Contact.Email};
                     messages.add(message);
                 }
             }
-            opp.Send_Test_Email__c = false;
+            opportunity.Send_Test_Email__c = false;
         }
-        update opps;
+        update opportunities;
         try {
             List<Messaging.SendEmailResult> results = Messaging.sendEmail(messages);
             for(Messaging.SendEmailResult result : results){

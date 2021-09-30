@@ -1,3 +1,4 @@
+//reworked Task 1
 public with sharing class NewAccountController {
     public Account account {get; set;}
     public List<Contact> dynamicContacts {get; set;}
@@ -5,15 +6,11 @@ public with sharing class NewAccountController {
 
     public NewAccountController() {
         String accountId = ApexPages.currentPage().getParameters().get('id');
-        if(String.isBlank(accountId))
-            return;
         this.account = [SELECT Name, BillingStreet, BillingPostalCode, BillingState,
                                 BillingCountry 
                         FROM Account 
                         WHERE Id = :accountId
                         ];
-        if(account == null)
-            return;
         this.dynamicContacts = [SELECT FirstName, LastName 
                                 FROM Contact 
                                 WHERE AccountId = :this.account.Id
@@ -33,22 +30,22 @@ public with sharing class NewAccountController {
         Account accountBuff = new Account(Name = this.account.Name, BillingPostalCode = this.account.BillingPostalCode, 
                                   BillingStreet= this.account.BillingStreet, BillingState = this.account.BillingState,
                                   BillingCountry = this.account.BillingCountry
-                                 );
+                                );
         
         Savepoint savePoint = Database.setSavepoint();
-        PageReference pageRef = null;
+        PageReference pageReference = null;
         try {
             insert accountBuff;
             for (Contact contact : this.dynamicContacts) {
                 contact.AccountId = accountBuff.Id;
             }
             insert dynamicContacts;
-            pageRef = new PageReference('/'+accountBuff.Id);
-            pageRef.setRedirect(true);
+            pageReference = new PageReference('/'+accountBuff.Id);
+            pageReference.setRedirect(true);
         } catch (DmlException ex) {
             ApexPages.AddMessage(new ApexPages.Message(ApexPages.Severity.ERROR, ex.getMessage()));
             Database.rollback(savePoint);
         }
-        return pageRef;
+        return pageReference;
     }
 }

@@ -1,3 +1,4 @@
+//prerowrked Task 5
 public class OpportunityTriggerHandlerFrmwk extends TriggerHandler {
     private Map<Id, Opportunity> newMap;
     private Map<Id, Opportunity> oldMap;
@@ -13,9 +14,9 @@ public class OpportunityTriggerHandlerFrmwk extends TriggerHandler {
 
     public override void beforeUpdate() {
         List<Opportunity> oppsSetClosedWon = new List<Opportunity>();
-        for (Opportunity opp : newRecords) {
-            if (OpportunityTriggerHandler.isSetClosedWon(opp, oldMap)){
-                oppsSetClosedWon.add(opp);
+        for (Opportunity opportunities : newRecords) {
+            if (OpportunityTriggerHandler.isSetClosedWon(opportunities, oldMap)){
+                oppsSetClosedWon.add(opportunities);
             }
         }
         if(!oppsSetClosedWon.isEmpty()){
@@ -34,9 +35,9 @@ public class OpportunityTriggerHandlerFrmwk extends TriggerHandler {
 
     public override void afterUpdate(){
         List<Opportunity> toNotifyOpps = new List<Opportunity>();
-        for (Opportunity opp : newRecords) {
-            if (OpportunityTriggerHandler.isSetClosedWon(opp, oldMap)){
-                toNotifyOpps.add(opp);
+        for (Opportunity opportunities : newRecords) {
+            if (OpportunityTriggerHandler.isSetClosedWon(opportunities, oldMap)){
+                toNotifyOpps.add(opportunities);
             }
         }
         if(!toNotifyOpps.isEmpty()){

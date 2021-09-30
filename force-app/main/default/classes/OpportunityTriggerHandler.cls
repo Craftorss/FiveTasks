@@ -1,3 +1,4 @@
+//prerowrked Task 5
 public class OpportunityTriggerHandler{
     public static void handleTrigger(List<Opportunity> newRecords, List<Opportunity> oldRecords,
                                     Map<Id,Opportunity> newMap, Map<Id,Opportunity> oldMap,
@@ -12,9 +13,9 @@ public class OpportunityTriggerHandler{
             А вот для OpportunityContactRoles нужно, чтобы Opportunity Id уже был*/
             when BEFORE_UPDATE {
                 List<Opportunity> oppsSetClosedWon = new List<Opportunity>();
-                for (Opportunity opp : newRecords) {
-                    if (isSetClosedWon(opp, oldMap)){
-                        oppsSetClosedWon.add(opp);
+                for (Opportunity opportunity : newRecords) {
+                    if (isSetClosedWon(opportunity, oldMap)){
+                        oppsSetClosedWon.add(opportunity);
                     }
                 }
                 if(!oppsSetClosedWon.isEmpty()){
@@ -33,9 +34,9 @@ public class OpportunityTriggerHandler{
 
             when AFTER_UPDATE {
                 List<Opportunity> toNotifyOpps = new List<Opportunity>();
-                for (Opportunity opp : newRecords) {
-                    if (isSetClosedWon(opp, oldMap)){
-                        toNotifyOpps.add(opp);
+                for (Opportunity opportunity : newRecords) {
+                    if (isSetClosedWon(opportunity, oldMap)){
+                        toNotifyOpps.add(opportunity);
                     }
                 }
                 if(!toNotifyOpps.isEmpty()){
@@ -54,40 +55,40 @@ public class OpportunityTriggerHandler{
         }
     }
 
-    public static void handleAccountValidationAll(List<Opportunity> opps, Map<Id,Opportunity> newMap){
-        List<Opportunity> checkAccAddr = new List<Opportunity>();
-        for(Opportunity opp : opps){
-            if(opp.Account == null){
-                newMap.get(opp.id).addError('No account for this Opportunity');
+    public static void handleAccountValidationAll(List<Opportunity> opportunities, Map<Id,Opportunity> newMap){
+        List<Opportunity> opportunitiesToCheckAddress = new List<Opportunity>();
+        for(Opportunity opportunity : opportunities){
+            if(opportunity.Account == null){
+                newMap.get(opportunity.id).addError('No account for this Opportunity');
             }
             else 
-                checkAccAddr.add(opp);
+                opportunitiesToCheckAddress.add(opportunity);
         }
-        if(checkAccAddr.isEmpty())
+        if(opportunitiesToCheckAddress.isEmpty())
             return;
-        for (Opportunity opp : checkAccAddr) {
-            if(BillingAddressHelper.isEmpty(opp.Account.BillingAddress))
-                newMap.get(opp.id).addError('Account Billing Address is Empty');
+        for (Opportunity opportunity : opportunitiesToCheckAddress) {
+            if(BillingAddressHelper.isEmpty(opportunity.Account.BillingAddress))
+                newMap.get(opportunity.id).addError('Account Billing Address is Empty');
         }  
     }
     
-    public static void handlePrimaryEmailValidationAll(List<Opportunity> opps, Map<Id,Opportunity> newMap){
-        for (Opportunity opp : opps) {
-            if(opp.OpportunityContactRoles.isEmpty()){
-                newMap.get(opp.id).addError('There is no primary contact"');
+    public static void handlePrimaryEmailValidationAll(List<Opportunity> opportunities, Map<Id,Opportunity> newMap){
+        for (Opportunity opportunity : opportunities) {
+            if(opportunity.OpportunityContactRoles.isEmpty()){
+                newMap.get(opportunity.id).addError('There is no primary contact"');
             }
             else {
-                if(String.isBlank(opp.OpportunityContactRoles[0].Contact.Email)){
-                    newMap.get(opp.id).AddError('Email is not specified on primary contact');
+                if(String.isBlank(opportunity.OpportunityContactRoles[0].Contact.Email)){
+                    newMap.get(opportunity.id).AddError('Email is not specified on primary contact');
                 }
             }
         }
     }
-    public static void handleSendMail(List<Opportunity> opps){
-        if(opps.isEmpty())
+    public static void handleSendMail(List<Opportunity> opportunities){
+        if(opportunities.isEmpty())
             return;
         else {
-            SendMailer.MassSendMailToPrimaryWithTemplate(opps, 'Task2');
+            SendMailer.MassSendMailToPrimaryWithTemplate(opportunities, 'Task2');
         }
     }
     public static Boolean isSetClosedWon(Opportunity newOpp, Map<Id, Opportunity> oldMap){
