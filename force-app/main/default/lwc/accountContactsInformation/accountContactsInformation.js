@@ -1,4 +1,4 @@
-import { api, LightningElement, track } from 'lwc';
+import { api, LightningElement, wire } from 'lwc';
 import FIRST_NAME_FIELD from '@salesforce/schema/Contact.FirstName';
 import LAST_NAME_FIELD from '@salesforce/schema/Contact.LastName';
 import PHONE_FIELD from '@salesforce/schema/Contact.Phone';
@@ -27,30 +27,30 @@ export default class AccountContactsInformation extends LightningElement {
     }
     set opportunityAccountId(value){
         this.accountIdStored = value;
-        this.getOpportunityAccountContacts();
     }
-    @api 
-    refresh(){
-        refreshApex(this.contacts)
-        console.log('refreshed contacts') 
-    }
- 
-    getOpportunityAccountContacts(){
-       getContacts({accountId: this.accountIdStored})
-       .then( data => {
+
+    wiredContacts
+    @wire(getContacts, {accountId:'$accountIdStored'})
+    wiredGetContacts(response){
+        this.wiredContacts = {response};
+        const {data, error} = response
+        if(data){
             this.error = undefined;
             this.contacts = data.map(item => {
                 return {...item, rowIndex: Date.now().toString(36) + Math.random().toString(36).substr(2)}
             })
-            console.log(this.contacts)
             this.onContactsChangeNotify();
-       })
-       .catch( error => {
+        } else if(error){
             this.error = error;
             this.contacts = undefined;
-            console.log(error);
-       })
+        }
     }
+
+    @api 
+    refresh(){
+        console.log('refreshed contacts') 
+    }
+
     handleCellChange(event){
         console.log(JSON.stringify(event.detail))
         let record = event.detail.draftValues[0]
@@ -87,4 +87,5 @@ export default class AccountContactsInformation extends LightningElement {
         })
         this.dispatchEvent(event);
     }
+
 }

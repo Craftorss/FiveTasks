@@ -27,29 +27,27 @@ export default class AccountInformationForm extends LightningElement {
     }
     set opportunityAccountId(value){
         this.accountIdStored = value;
-        this.getAccountInfo();
-    }
-    @api 
-    refresh(){
-        refreshApex(this.account)
-        console.log('refreshed acc') 
     }
 
-    getAccountInfo(){
-        console.log(this.accountIdStored)
-        getAccount({accountId: this.accountIdStored})
-        .then(data => {
-            console.log(data);
-            this.account = {...data};
-            this.error = undefined;
-            this.onAccountChangeNotify();
-        })
-        .catch(error => {
-            console.log(error);
-            this.error = error;
-            this.account = undefined;
-            this.onAccountChangeNotify();
-        })
+    wiredAccount
+    @wire(getAccount, {accountId:'$accountIdStored'})
+    wiredGetAccount(response){
+        this.wiredAccount = response;
+        const {data, error} = response
+        if(data){
+            this.account = {...data}
+            this.error = undefined
+        } else if(error){
+            this.account = undefined
+            this.error = error
+        }
+        this.onAccountChangeNotify();
+    }
+    
+    @api 
+    refresh(){
+
+        console.log('refreshed acc') 
     }
 
     handleChange(event){
