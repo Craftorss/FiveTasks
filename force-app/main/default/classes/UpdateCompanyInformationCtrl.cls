@@ -1,5 +1,5 @@
 public with sharing class UpdateCompanyInformationCtrl {
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled
     public static Account getAccount(String accountId){
         System.debug('Entered getAccount with id = ' + accountId);
         Account account =   [SELECT Name, BillingStreet, BillingPostalCode, BillingState, 
@@ -12,7 +12,7 @@ public with sharing class UpdateCompanyInformationCtrl {
         return account;
     }
 
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled
     public static List<Contact> getContacts(String accountId){
         if(String.isBlank(accountId))
             return null;
