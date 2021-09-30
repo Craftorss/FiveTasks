@@ -27,27 +27,29 @@ export default class AccountContactsInformation extends LightningElement {
     }
     set opportunityAccountId(value){
         this.accountIdStored = value;
+        this.getOpportunityAccountContacts();
     }
 
-    wiredContacts
-    @wire(getContacts, {accountId:'$accountIdStored'})
-    wiredGetContacts(response){
-        this.wiredContacts = {response};
-        const {data, error} = response
-        if(data){
+    getOpportunityAccountContacts(){
+        getContacts({accountId: this.accountIdStored})
+        .then( data => {
             this.error = undefined;
             this.contacts = data.map(item => {
                 return {...item, rowIndex: Date.now().toString(36) + Math.random().toString(36).substr(2)}
             })
+            console.log(this.contacts)
             this.onContactsChangeNotify();
-        } else if(error){
-            this.error = error;
-            this.contacts = undefined;
-        }
-    }
+        })
+        .catch( error => {
+             this.error = error;
+             this.contacts = undefined;
+             this.onContactsChangeNotify();
+        })
+     }
 
     @api 
     refresh(){
+        //maybe for future uses
         console.log('refreshed contacts') 
     }
 
@@ -78,14 +80,16 @@ export default class AccountContactsInformation extends LightningElement {
 
     onContactsChangeNotify(){
         let arr = [];
-        this.contacts.forEach(element => {
-            let {rowIndex, ...item} = element
-            arr.push(item);
-        });
+        if(this.contacts)
+            this.contacts.forEach(element => {
+                let {rowIndex, ...item} = element
+                arr.push(item);
+            });
+        else
+            arr = undefined;
         const event = new CustomEvent('contactschange',{
             detail: arr
         })
         this.dispatchEvent(event);
     }
-
 }

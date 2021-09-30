@@ -1,6 +1,6 @@
 import { api, LightningElement, track, wire} from 'lwc';
 import { CloseActionScreenEvent } from 'lightning/actions'
-import { getFieldValue, getRecord, updateRecord } from 'lightning/uiRecordApi';
+import { getFieldValue, getRecord, getRecordNotifyChange } from 'lightning/uiRecordApi';
 import AccountId_FIELD from '@salesforce/schema/Opportunity.AccountId';
 import saveAccountAndContacts from '@salesforce/apex/UpdateCompanyInformationCtrl.saveAccountAndContacts';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent'
@@ -42,7 +42,21 @@ export default class UpdateCompanyInformation extends LightningElement {
                 message: 'Successfully updated company information',
                 variant: 'success'
             }));
-        
+            //maybe for future uses
+            let toRefreshClasses = this.template.querySelectorAll('.toRefresh');
+            toRefreshClasses.forEach(element => {
+                try{
+                    element.refresh(); 
+                } catch(err) {
+                    console.log(err)
+                }     
+            })
+            this.dispatchEvent(
+                new CloseActionScreenEvent()
+            );
+            console.log('update record')
+            getRecordNotifyChange([{recordId: this.recordId}])
+            console.log('update record done')
         })
         .catch(error => {
             this.dispatchEvent(new ShowToastEvent({

@@ -2,23 +2,23 @@
     <lightning-card title="Account Information" icon-name="standard:account" class="slds-card_boundary fixBoundary">
         <template if:true={account}>
             <lightning-input value={account.Name} required="true" variant="label-inline" class="slds-var-p-horizontal_xx-small"
-                            name="name" label={fieldsLabels.Name} onchange={handleChange}
+                            name="Name" label={fieldsLabels.Name} onchange={handleChange}
             >
             </lightning-input>
             <lightning-textarea value={account.BillingStreet} class="slds-var-p-horizontal_xx-small" variant="label-inline"
-                            name="billingStreet" label={fieldsLabels.BillingStreet} onchange={handleChange}
+                            name="BillingStreet" label={fieldsLabels.BillingStreet} onchange={handleChange}
             >
             </lightning-textarea>
             <lightning-input value={account.BillingPostalCode} class="slds-var-p-horizontal_xx-small" variant="label-inline"
-                            name="billingPostalCode" label={fieldsLabels.BillingPostalCode} onchange={handleChange}
+                            name="BillingPostalCode" label={fieldsLabels.BillingPostalCode} onchange={handleChange}
             >
             </lightning-input>
             <lightning-input value={account.BillingState} class="slds-var-p-horizontal_xx-small" variant="label-inline"
-                            name="billingState" label={fieldsLabels.BillingState} onchange={handleChange}
+                            name="BillingState" label={fieldsLabels.BillingState} onchange={handleChange}
             >
             </lightning-input>
             <lightning-input value={account.BillingCountry} class="slds-var-p-horizontal_xx-small" variant="label-inline"
-                            name="billingCountry" label={fieldsLabels.BillingCountry} onchange={handleChange}
+                            name="BillingCountry" label={fieldsLabels.BillingCountry} onchange={handleChange}
             >
             </lightning-input>
         </template>

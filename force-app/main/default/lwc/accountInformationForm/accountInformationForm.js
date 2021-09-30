@@ -27,47 +27,34 @@ export default class AccountInformationForm extends LightningElement {
     }
     set opportunityAccountId(value){
         this.accountIdStored = value;
+        this.getAccountInfo();
     }
 
-    wiredAccount
-    @wire(getAccount, {accountId:'$accountIdStored'})
-    wiredGetAccount(response){
-        this.wiredAccount = response;
-        const {data, error} = response
-        if(data){
-            this.account = {...data}
-            this.error = undefined
-        } else if(error){
-            this.account = undefined
-            this.error = error
-        }
-        this.onAccountChangeNotify();
+    getAccountInfo(){
+        console.log(this.accountIdStored)
+        getAccount({accountId: this.accountIdStored})
+        .then(data => {
+            console.log(data);
+            this.account = data;
+            this.error = undefined;
+            this.onAccountChangeNotify();
+        })
+        .catch(error => {
+            console.log(error);
+            this.error = error;
+            this.account = undefined;
+            this.onAccountChangeNotify();
+        })
     }
     
     @api 
     refresh(){
-
+        //maybe for future uses
         console.log('refreshed acc') 
     }
 
     handleChange(event){
-        switch(event.target.name){
-            case "name":
-                this.account.Name = event.target.value
-                break;
-            case "billingStreet":
-                this.account.BillingStreet = event.target.value
-                break;
-            case "billingState":
-                this.account.BillingState = event.target.value
-                break;
-            case "billingCountry":
-                this.account.BillingCountry = event.target.value
-                break;
-            case "billingPostalCode":
-                this.account.BillingPostalCode = event.target.value
-                break;
-        }
+        this.account[event.target.name] = event.target.value;
         this.onAccountChangeNotify()
     }
 
