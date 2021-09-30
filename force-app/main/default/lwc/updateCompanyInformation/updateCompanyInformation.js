@@ -42,10 +42,15 @@ export default class UpdateCompanyInformation extends LightningElement {
                 message: 'Successfully updated company information',
                 variant: 'success'
             }));
-            toRefreshClasses = this.template.querySelectorAll('toRefresh');
-            toRefreshClasses.forEach(element => {
-                element.refresh();
-            });
+            let toRefreshClasses = this.template.querySelectorAll('.toRefresh');
+            try{
+                toRefreshClasses.forEach(element => {
+                    element.refresh(); 
+                });
+            }catch(err){
+                console.log(err)
+            }
+           
         })
         .catch(error => {
             this.dispatchEvent(new ShowToastEvent({

@@ -30,10 +30,11 @@ export default class AccountContactsInformation extends LightningElement {
         this.getOpportunityAccountContacts();
     }
     @api 
-    get refresh(){
-        getOpportunityAccountContacts()
-        console.log('refreshed')
+    refresh(){
+        refreshApex(this.contacts)
+        console.log('refreshed contacts') 
     }
+ 
     getOpportunityAccountContacts(){
        getContacts({accountId: this.accountIdStored})
        .then( data => {

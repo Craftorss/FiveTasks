@@ -1,4 +1,4 @@
-import { api, LightningElement, wire } from 'lwc';
+import { api, LightningElement, track, wire } from 'lwc';
 import NAME_FIELD from '@salesforce/schema/Account.Name';
 import BILLING_STREET_FIELD from '@salesforce/schema/Account.BillingStreet';
 import BILLING_POSTAL_CODE_FIELD from '@salesforce/schema/Account.BillingPostalCode';
@@ -21,7 +21,6 @@ export default class AccountInformationForm extends LightningElement {
     account
     fieldsLabels = fieldsLabels;
 
-
     @api
     get opportunityAccountId(){
         return this.accountIdStored
@@ -31,9 +30,9 @@ export default class AccountInformationForm extends LightningElement {
         this.getAccountInfo();
     }
     @api 
-    get refresh(){
-       this.getAccountInfo();
-       console.log('refreshed acc') 
+    refresh(){
+        refreshApex(this.account)
+        console.log('refreshed acc') 
     }
 
     getAccountInfo(){
@@ -41,7 +40,7 @@ export default class AccountInformationForm extends LightningElement {
         getAccount({accountId: this.accountIdStored})
         .then(data => {
             console.log(data);
-            this.account = data;
+            this.account = {...data};
             this.error = undefined;
             this.onAccountChangeNotify();
         })
@@ -54,21 +53,21 @@ export default class AccountInformationForm extends LightningElement {
     }
 
     handleChange(event){
-        switch(event.detail.name){
+        switch(event.target.name){
             case "name":
-                this.account.Name = event.detail.value
+                this.account.Name = event.target.value
                 break;
             case "billingStreet":
-                this.account.BillingStreet = event.detail.value
+                this.account.BillingStreet = event.target.value
                 break;
             case "billingState":
-                this.account.BillingState = event.detail.value
+                this.account.BillingState = event.target.value
                 break;
             case "billingCountry":
-                this.account.BillingCountry = event.detail.value
+                this.account.BillingCountry = event.target.value
                 break;
             case "billingPostalCode":
-                this.account.BillingPostalCode = event.detail.value
+                this.account.BillingPostalCode = event.target.value
                 break;
         }
         this.onAccountChangeNotify()
