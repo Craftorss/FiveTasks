@@ -4,7 +4,7 @@
         <lightning-button label="Add Contact" slot="actions" onclick={handleAddContact}></lightning-button>
         <template if:true={contacts}>
             <lightning-datatable
-                key-field="rowIndex"
+                key-field="rowUniqId"
                 data={contacts}
                 columns={columns}
                 hide-checkbox-column="true"

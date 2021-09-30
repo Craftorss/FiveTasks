@@ -1,9 +1,6 @@
 <!-- sldsValidatorIgnore -->
 <template>
     <lightning-quick-action-panel header="Update Company Information">
-      <template if:true={error}>
-        Error is: {error}
-      </template>
       <template if:true={opportunityAccountId}>
         <c-account-information-form 
           opportunity-account-id={opportunityAccountId} 
@@ -24,7 +21,7 @@
       </template>
       <div slot="footer">
         <lightning-button variant="neutral" label="Cancel" onclick={closeAction}></lightning-button>
-        <lightning-button variant="brand" label="Save" onclick={closeAction} class="slds-var-m-left_x-small"></lightning-button>
+        <lightning-button variant="brand" label="Save" onclick={saveAction} class="slds-var-m-left_x-small"></lightning-button>
       </div>
     </lightning-quick-action-panel>
 </template>

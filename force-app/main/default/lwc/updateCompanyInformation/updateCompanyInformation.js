@@ -21,19 +21,33 @@ export default class UpdateCompanyInformation extends LightningElement {
     }
     handleContactsChange(event){
         this.contacts = event.detail;
-        console.log('Updated CONTACTS')
-        console.log(this.contacts)
     }
 
     closeAction(){
+        this.dispatchEvent(
+            new CloseActionScreenEvent()
+        );
+    }
+    
+    saveAction(){
+        console.log(this.account)
         saveAccountAndContacts({accountJson: JSON.stringify(this.account), contactsJson: JSON.stringify(this.contacts)})
         .then(() => {
+            this.dispatchEvent(new ShowToastEvent({
+                title: 'Success',
+                message: 'Successfully updated company information',
+                variant: 'success'
+            }));
             this.dispatchEvent(
                 new CloseActionScreenEvent()
             );
         })
         .catch(error => {
-            this.error = error
+            this.dispatchEvent(new ShowToastEvent({
+                title: error.statusText,
+                message: error.body.message,
+                variant: 'error'
+            }));
         })
     }
 }
