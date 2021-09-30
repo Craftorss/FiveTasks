@@ -3,6 +3,7 @@ import { CloseActionScreenEvent } from 'lightning/actions'
 import { getFieldValue, getRecord } from 'lightning/uiRecordApi';
 import AccountId_FIELD from '@salesforce/schema/Opportunity.AccountId';
 import saveAccountAndContacts from '@salesforce/apex/UpdateCompanyInformationCtrl.saveAccountAndContacts';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent'
 export default class UpdateCompanyInformation extends LightningElement {
     @api
     recordId
@@ -18,6 +19,7 @@ export default class UpdateCompanyInformation extends LightningElement {
 
     handleAccountChange(event){
         this.account = event.detail;
+        console.log(JSON.stringify(this.account))
     }
     handleContactsChange(event){
         this.contacts = event.detail;

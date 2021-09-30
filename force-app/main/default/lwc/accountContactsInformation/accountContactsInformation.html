@@ -1,10 +1,11 @@
+   
 <!-- sldsValidatorIgnore -->
 <template>
     <lightning-card title="Contacts" icon-name="standard:account" class="slds-card_boundary fixBoundary">
         <lightning-button label="Add Contact" slot="actions" onclick={handleAddContact}></lightning-button>
         <template if:true={contacts}>
             <lightning-datatable
-                key-field="rowUniqId"
+                key-field="rowIndex"
                 data={contacts}
                 columns={columns}
                 hide-checkbox-column="true"

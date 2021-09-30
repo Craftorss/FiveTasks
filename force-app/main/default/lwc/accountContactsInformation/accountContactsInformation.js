@@ -33,24 +33,23 @@ export default class AccountContactsInformation extends LightningElement {
        getContacts({accountId: this.accountIdStored})
        .then( data => {
             this.error = undefined;
-            let iter = -1
             this.contacts = data.map(item => {
-                iter++
-                return {...item, rowUniqId: iter}
+                return {...item, rowIndex: Date.now().toString(36) + Math.random().toString(36).substr(2)}
             })
+            console.log(this.contacts)
             this.onContactsChangeNotify();
        })
        .catch( error => {
             this.error = error;
             this.contacts = undefined;
+            console.log(error);
        })
     }
     handleCellChange(event){
-        console.log(this.contacts)
         console.log(JSON.stringify(event.detail))
         let record = event.detail.draftValues[0]
         this.contacts = this.contacts.map(item => {
-            return item.rowUniqId == record.rowUniqId ? {...item, ...record} : item
+            return item.rowIndex == record.rowIndex ? {...item, ...record} : item
         })
         this.draftValues = [];
         this.onContactsChangeNotify()
@@ -58,21 +57,23 @@ export default class AccountContactsInformation extends LightningElement {
     handleRowAction(event){
         switch (event.detail.action.name) {
             case 'Delete':
-                this.contacts = this.contacts.filter(item => item.rowUniqId != event.detail.row.rowUniqId)
+                this.contacts = this.contacts.filter(item => item.rowIndex != event.detail.row.rowIndex)
                 break;
             default:
                 break;
         }
+        console.log(this.contacts)
         this.onContactsChangeNotify()
     }
     handleAddContact(event){
-        this.contacts = [...this.contacts, {rowUniqId: Date.now().toString(36) + Math.random().toString(36).substr(2)}];
+        this.contacts = [...this.contacts, {rowIndex: Date.now().toString(36) + Math.random().toString(36).substr(2)}];
         this.onContactsChangeNotify()
     }
+
     onContactsChangeNotify(){
         let arr = [];
         this.contacts.forEach(element => {
-            let {rowUniqId, ...item} = element
+            let {rowIndex, ...item} = element
             arr.push(item);
         });
         const event = new CustomEvent('contactschange',{
