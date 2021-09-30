@@ -5,6 +5,7 @@ import BILLING_POSTAL_CODE_FIELD from '@salesforce/schema/Account.BillingPostalC
 import BILLING_STATE_FIELD from '@salesforce/schema/Account.BillingState';
 import BILLING_COUNTRY_FIELD from '@salesforce/schema/Account.BillingCountry';
 import getAccount from '@salesforce/apex/UpdateCompanyInformationCtrl.getAccount';
+import refreshApex from '@salesforce/apex'
 
 const fieldsLabels = {
     "Name": NAME_FIELD.fieldApiName, 
@@ -29,6 +30,11 @@ export default class AccountInformationForm extends LightningElement {
         this.accountIdStored = value;
         this.getAccountInfo();
     }
+    @api 
+    get refresh(){
+       this.getAccountInfo();
+       console.log('refreshed acc') 
+    }
 
     getAccountInfo(){
         console.log(this.accountIdStored)
@@ -48,28 +54,24 @@ export default class AccountInformationForm extends LightningElement {
     }
 
     handleChange(event){
-        switch(event.target.name){
+        switch(event.detail.name){
             case "name":
-                this.account.Name = event.target.value
-                this.onAccountChangeNotify()
+                this.account.Name = event.detail.value
                 break;
             case "billingStreet":
-                this.account.BillingStreet = event.target.value
-                this.onAccountChangeNotify()
+                this.account.BillingStreet = event.detail.value
                 break;
             case "billingState":
-                this.account.BillingState = event.target.value
-                this.onAccountChangeNotify()
+                this.account.BillingState = event.detail.value
                 break;
             case "billingCountry":
-                this.account.BillingCountry = event.target.value
-                this.onAccountChangeNotify()
+                this.account.BillingCountry = event.detail.value
                 break;
             case "billingPostalCode":
-                this.account.BillingPostalCode = event.target.value
-                this.onAccountChangeNotify()
+                this.account.BillingPostalCode = event.detail.value
                 break;
         }
+        this.onAccountChangeNotify()
     }
 
     onAccountChangeNotify(){

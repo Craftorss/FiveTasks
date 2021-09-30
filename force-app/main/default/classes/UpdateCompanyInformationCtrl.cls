@@ -1,5 +1,5 @@
 public with sharing class UpdateCompanyInformationCtrl {
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static Account getAccount(String accountId){
         System.debug('Entered getAccount with id = ' + accountId);
         Account account =   [SELECT Name, BillingStreet, BillingPostalCode, BillingState, 

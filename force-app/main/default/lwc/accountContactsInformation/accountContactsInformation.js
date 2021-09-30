@@ -4,6 +4,7 @@ import LAST_NAME_FIELD from '@salesforce/schema/Contact.LastName';
 import PHONE_FIELD from '@salesforce/schema/Contact.Phone';
 import EMAIL_FIELD from '@salesforce/schema/Contact.Email';
 import getContacts from '@salesforce/apex/UpdateCompanyInformationCtrl.getContacts';
+import refreshApex from '@salesforce/apex'
 
 const columns = [
     {label: FIRST_NAME_FIELD.fieldApiName, fieldName:'FirstName', type:'text', editable: true},
@@ -28,7 +29,11 @@ export default class AccountContactsInformation extends LightningElement {
         this.accountIdStored = value;
         this.getOpportunityAccountContacts();
     }
-
+    @api 
+    get refresh(){
+        getOpportunityAccountContacts()
+        console.log('refreshed')
+    }
     getOpportunityAccountContacts(){
        getContacts({accountId: this.accountIdStored})
        .then( data => {

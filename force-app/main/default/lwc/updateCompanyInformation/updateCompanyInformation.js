@@ -4,6 +4,8 @@ import { getFieldValue, getRecord } from 'lightning/uiRecordApi';
 import AccountId_FIELD from '@salesforce/schema/Opportunity.AccountId';
 import saveAccountAndContacts from '@salesforce/apex/UpdateCompanyInformationCtrl.saveAccountAndContacts';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent'
+import refreshApex from '@salesforce/apex'
+
 export default class UpdateCompanyInformation extends LightningElement {
     @api
     recordId
@@ -40,9 +42,10 @@ export default class UpdateCompanyInformation extends LightningElement {
                 message: 'Successfully updated company information',
                 variant: 'success'
             }));
-            this.dispatchEvent(
-                new CloseActionScreenEvent()
-            );
+            toRefreshClasses = this.template.querySelectorAll('toRefresh');
+            toRefreshClasses.forEach(element => {
+                element.refresh();
+            });
         })
         .catch(error => {
             this.dispatchEvent(new ShowToastEvent({
