@@ -12,46 +12,56 @@ public class OpportunityTriggerHandler{
             Иначе при insert проверить BillingAddress на аккаунте ещё могу по AccountId,
             А вот для OpportunityContactRoles нужно, чтобы Opportunity Id уже был*/
             when BEFORE_UPDATE {
-                List<Opportunity> oppsSetClosedWon = new List<Opportunity>();
-                for (Opportunity opportunity : newRecords) {
-                    if (isSetClosedWon(opportunity, oldMap)){
-                        oppsSetClosedWon.add(opportunity);
-                    }
-                }
-                if(!oppsSetClosedWon.isEmpty()){
-                    List<Opportunity> oppsWithRelated = [SELECT Account.BillingAddress,(
-                                                            SELECT Contact.Email 
-                                                            FROM OpportunityContactRoles
-                                                            WHERE isPrimary = true
-                                                            )  
-                                                        FROM Opportunity 
-                                                        WHERE ID IN :oppsSetClosedWon 
-                                                        ];
-                    handleAccountValidationAll(oppsWithRelated, newMap);
-                    handlePrimaryEmailValidationAll(oppsWithRelated, newMap);
-                }
+                validateOnSetClosedWon(newRecords, newMap, oldMap);
             }
 
             when AFTER_UPDATE {
-                List<Opportunity> toNotifyOpps = new List<Opportunity>();
-                for (Opportunity opportunity : newRecords) {
-                    if (isSetClosedWon(opportunity, oldMap)){
-                        toNotifyOpps.add(opportunity);
-                    }
-                }
-                if(!toNotifyOpps.isEmpty()){
-                    List<Opportunity> oppsWithRelated = [SELECT (
-                                                            SELECT Contact.Email 
-                                                            FROM OpportunityContactRoles
-                                                            WHERE isPrimary = true
-                                                            )  
-                                                        FROM Opportunity 
-                                                        WHERE ID IN :toNotifyOpps 
-                                                        ];
-                    handleSendMail(oppsWithRelated);
-                    System.debug('ToNotify' + oppsWithRelated);
-                }
+                processOnSetClosedWon(newRecords, oldMap);
             }
+        }
+    }
+
+    public static void validateOnSetClosedWon(List<Opportunity> newRecords, Map<Id, Opportunity> newMap, Map<Id, Opportunity> oldMap){
+        List<Opportunity> oppsSetClosedWon = new List<Opportunity>();
+        for (Opportunity opportunity : newRecords) {
+            if (isSetClosedWon(opportunity, oldMap)){
+                oppsSetClosedWon.add(opportunity);
+            }
+        }
+        if(!oppsSetClosedWon.isEmpty()){
+            List<Opportunity> oppsWithRelated = [
+                    SELECT Account.BillingAddress,(
+                        SELECT Contact.Email 
+                        FROM OpportunityContactRoles
+                        WHERE isPrimary = true
+                        )  
+                    FROM Opportunity 
+                    WHERE ID IN :oppsSetClosedWon 
+            ];
+            handleAccountValidationAll(oppsWithRelated, newMap);
+            handlePrimaryEmailValidationAll(oppsWithRelated, newMap);
+        }
+    }
+
+    public static void processOnSetClosedWon(List<Opportunity> newRecords, map<Id, Opportunity> oldMap){
+        List<Opportunity> toNotifyOpps = new List<Opportunity>();
+        for (Opportunity opportunity : newRecords) {
+            if (isSetClosedWon(opportunity, oldMap)){
+                toNotifyOpps.add(opportunity);
+            }
+        }
+        if(!toNotifyOpps.isEmpty()){
+            List<Opportunity> oppsWithRelated = [
+                    SELECT (
+                        SELECT Contact.Email 
+                        FROM OpportunityContactRoles
+                        WHERE isPrimary = true
+                        )  
+                    FROM Opportunity 
+                    WHERE ID IN :toNotifyOpps 
+            ];
+            handleSendMail(oppsWithRelated);
+            System.debug('ToNotify' + oppsWithRelated);
         }
     }
 

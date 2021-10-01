@@ -13,44 +13,10 @@ public class OpportunityTriggerHandlerFrmwk extends TriggerHandler {
     }
 
     public override void beforeUpdate() {
-        List<Opportunity> oppsSetClosedWon = new List<Opportunity>();
-        for (Opportunity opportunities : newRecords) {
-            if (OpportunityTriggerHandler.isSetClosedWon(opportunities, oldMap)){
-                oppsSetClosedWon.add(opportunities);
-            }
-        }
-        if(!oppsSetClosedWon.isEmpty()){
-            List<Opportunity> oppsWithRelated = [SELECT Account.BillingAddress,(
-                                                    SELECT Contact.Email 
-                                                    FROM OpportunityContactRoles
-                                                    WHERE isPrimary = true
-                                                    )  
-                                                FROM Opportunity 
-                                                WHERE ID IN :oppsSetClosedWon 
-                                                ];
-            OpportunityTriggerHandler.handleAccountValidationAll(oppsWithRelated, newMap);
-            OpportunityTriggerHandler.handlePrimaryEmailValidationAll(oppsWithRelated, newMap);
-        }
+        OpportunityTriggerHandler.validateOnSetClosedWon(newRecords, newMap, oldMap);
     }
 
     public override void afterUpdate(){
-        List<Opportunity> toNotifyOpps = new List<Opportunity>();
-        for (Opportunity opportunities : newRecords) {
-            if (OpportunityTriggerHandler.isSetClosedWon(opportunities, oldMap)){
-                toNotifyOpps.add(opportunities);
-            }
-        }
-        if(!toNotifyOpps.isEmpty()){
-            List<Opportunity> oppsWithRelated = [SELECT (
-                                                    SELECT Contact.Email 
-                                                    FROM OpportunityContactRoles
-                                                    WHERE isPrimary = true
-                                                    )  
-                                                FROM Opportunity 
-                                                WHERE ID IN :toNotifyOpps 
-                                                ];
-            OpportunityTriggerHandler.handleSendMail(oppsWithRelated);
-            System.debug('ToNotify' + oppsWithRelated);
-        }
+        OpportunityTriggerHandler.processOnSetClosedWon(newRecords, oldMap);
     }
 }
