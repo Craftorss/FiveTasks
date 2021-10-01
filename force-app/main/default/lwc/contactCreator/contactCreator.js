@@ -5,7 +5,7 @@ import EMAIL from '@salesforce/schema/Contact.Email';
 import CONTACT_OBJECT from '@salesforce/schema/Contact'
 
 const fields = [FIRST_NAME, LAST_NAME, EMAIL]
-const objectApiName = CONTACT_OBJECT.objectApiName
+const objectApiName = CONTACT_OBJECT
 export default class ContactCreator extends LightningElement {
     fields = fields
     objectApiName = objectApiName
